@@ -301,9 +301,9 @@
 
         .result-text {
             color: var(--fog);
-            font-size: .97rem;
-            line-height: 1.7;
-            margin: 22px 0;
+            font-size: .95rem;
+            line-height: 1.6;
+            margin: 18px 0;
         }
 
         /* ═══ DIVISOR COM GRADIENTE ═══ */
@@ -372,11 +372,24 @@
         /* ═══ MOBILE ═══ */
         @media (max-width:480px) {
             .card {
-                padding: 28px 18px;
+                padding: 24px 16px;
             }
 
             h1 {
-                font-size: 1.5rem;
+                font-size: 1.35rem;
+                margin-bottom: 24px;
+            }
+
+            .result-text {
+                font-size: .88rem;
+                line-height: 1.5;
+                margin: 14px 0;
+            }
+
+            .cta-btn {
+                font-size: 1rem;
+                padding: 16px 12px;
+                line-height: 1.3;
             }
         }
 
@@ -592,20 +605,20 @@
             {
                 range: [0, 4], badgeClass: "badge-red",
                 badge: "Perfil: No Chute",
-                title: "Você não está correndo com estratégia. Está correndo na base da esperança.",
-                text: "E esperança acaba quando a prova começa de verdade.<br><br>Não é falta de esforço. É falta de controle sobre o que sustenta sua energia. Hoje, sua nutrição depende do improviso: você come o que dá, toma gel quando lembra e ajusta na hora.<br><br>Esse tipo de erro não aparece no começo. Aparece quando sua perna trava, seu ritmo cai e não dá mais tempo de corrigir.<br><br>Você perde porque chega nela sem saber sustentar o próprio desempenho.<br><br>O Protocolo Ignição tira você do improviso e constrói uma estratégia real: testada nos treinos, ajustada no seu ritmo e pronta para o dia da prova."
+                title: "Você corre na base da esperança.",
+                text: "E a esperança acaba quando a prova começa de verdade.<br><br>Sua nutrição depende do improviso: você come o que dá e ajusta na hora. Esse erro aparece quando sua perna trava e não dá mais tempo de corrigir.<br><br>O Protocolo Ignição tira você do improviso e constrói uma estratégia real, testada e pronta para o dia da prova."
             },
             {
                 range: [5, 9], badgeClass: "badge-amber",
                 badge: "Perfil: Quase Lá",
-                title: "Você já sabe mais que a maioria. E é exatamente isso que está te travando.",
-                text: "Seus erros não são mais óbvios. São detalhes como timing errado de gel, reposição mal distribuída ou estratégia de véspera mal ajustada.<br><br>Isso passa despercebido no treino, mas aparece quando a prova exige mais de você. Você sente que fez tudo certo, mas o resultado não vem como deveria.<br><br>Você está perto, mas ainda não está no controle. No seu nível, não é esforço que falta. É precisão.<br><br>O Protocolo Ignição identifica esses pontos cegos e ajusta um por um. Melhorar pouco no seu caso já muda muito."
+                title: "Você está perto, mas falta precisão.",
+                text: "Seus erros não são óbvios. São detalhes: timing de gel ou estratégia de véspera mal ajustada.<br><br>Isso passa despercebido no treino, mas aparece quando a prova exige mais. Você sente que fez tudo certo, mas o resultado não vem.<br><br>O Protocolo Ignição identifica esses pontos cegos e ajusta um por um. Melhorar pouco no seu caso já muda muito."
             },
             {
                 range: [10, 14], badgeClass: "badge-green",
                 badge: "Perfil: Blindado",
-                title: "Você está acima da média. Mas ainda não está no controle total.",
-                text: "Você já faz o básico bem: testa estratégia, cuida da véspera e respeita a nutrição. Mas no alto nível, não é o básico que te derruba. É o detalhe que você ainda não percebeu.<br><br>Saber que precisa de carboidrato é o básico. Saber exatamente quanto, quando e em qual formato, no seu ritmo específico, é outra coisa completamente diferente.<br><br>É aqui que a maioria trava sem entender o porquê.<br><br>O Protocolo Ignição é sobre ajuste fino. Entramos nos detalhes milimétricos, personalizados e testados no seu contexto. Porque consistência em prova vem do que você executa sem erro."
+                title: "Você é elite, mas ainda não tem o controle total.",
+                text: "Você faz o básico bem, mas no alto nível, o detalhe te derruba. Saber que precisa de carboidrato é o básico. Saber exatamente quanto e quando no seu ritmo é o diferencial.<br><br>O Protocolo Ignição é sobre ajuste fino milimétrico e personalizado para o seu contexto.<br><br>Consistência em prova vem do que você executa sem erro."
             }
         ];
 
@@ -627,7 +640,7 @@
         function render() {
             const q = questions[step];
             progressBar.style.width = `${(step / questions.length) * 100}%`;
-            questionLabel.textContent = `PERGUNTA ${String(step + 1).padStart(2, '0')} / ${questions.length}`;
+            questionLabel.textContent = `PERGUNTA ${step + 1} / ${questions.length}`;
             questionText.textContent = q.q;
 
             optionsEl.innerHTML = '';
@@ -672,16 +685,23 @@
             function animateLoading(timestamp) {
                 if (!startTime) startTime = timestamp;
                 const elapsed = timestamp - startTime;
-                let t = Math.min(elapsed / duration, 1);
                 
-                // Ease Out Quad: t * (2 - t)
-                const progress = t * (2 - t);
-                const percent = Math.floor(progress * 100);
+                let progress = 0;
+                if (elapsed <= 500) {
+                    // 0 a 50% em 0.5s (linear ou ease-in nessa fase)
+                    progress = (elapsed / 500) * 0.5;
+                } else {
+                    // 50% a 100% nos 1000ms restantes
+                    const remainingElapsed = elapsed - 500;
+                    progress = 0.5 + (remainingElapsed / 1000) * 0.5;
+                }
+                
+                const percent = Math.floor(Math.min(progress, 1) * 100);
                 
                 percentEl.textContent = percent + '%';
                 barEl.style.width = percent + '%';
                 
-                if (t < 1) {
+                if (elapsed < duration) {
                     requestAnimationFrame(animateLoading);
                 }
             }
@@ -693,6 +713,10 @@
            SELEÇÃO DE RESPOSTA
         ═══════════════════════════════════════════════ */
         function pick(btn, pts) {
+            // Limpa as opções imediatamente para evitar pré-marcação visual na próxima tela
+            const allBtns = optionsEl.querySelectorAll('.option-btn');
+            allBtns.forEach(b => b.classList.remove('selected'));
+            
             // Vibração (Android/Chrome)
             if (navigator.vibrate) navigator.vibrate(40);
 
