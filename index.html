@@ -280,12 +280,14 @@
                 background .2s ease, border-color .2s ease, color .2s ease;
         }
 
-        .option-btn:hover {
-            background: var(--color-action-primary);
-            border-color: var(--color-action-primary);
-            color: #FFFFFF;
-            transform: translateX(6px) !important;
-            box-shadow: 0 8px 16px rgba(192, 26, 26, 0.2);
+        @media (hover: hover) {
+            .option-btn:hover {
+                background: var(--color-action-primary);
+                border-color: var(--color-action-primary);
+                color: #FFFFFF;
+                transform: translateX(6px) !important;
+                box-shadow: 0 8px 16px rgba(192, 26, 26, 0.2);
+            }
         }
 
         .option-btn:active {
