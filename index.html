@@ -511,7 +511,7 @@
             <h1 id="resultTitle"></h1>
             <div class="divider"></div>
             <p id="resultText" class="result-text"></p>
-            <a href="https://wa.me/SEUNUMERO?text=Quero+conhecer+o+Protocolo+Igni%C3%A7%C3%A3o" class="cta-btn"
+            <a href="https://ignicao.vitorvelame.com.br/" class="cta-btn"
                 id="ctaBtn">
                 <svg class="flame-icon" width="30" height="30" viewBox="0 0 24 24" fill="none"
                     xmlns="http://www.w3.org/2000/svg">
@@ -606,19 +606,19 @@
                 range: [0, 4], badgeClass: "badge-red",
                 badge: "Perfil: No Chute",
                 title: "Você corre na base da esperança.",
-                text: "E esperança acaba. Geralmente bem na hora que a prova começa de verdade.<br><br>Você não perde por falta de treino. Você perde porque improvisa na nutrição. Come o que dá, toma gel quando lembra e tenta ajustar tudo na hora. O problema é que o erro só aparece quando não dá mais tempo de corrigir.<br><br>Não falta informação para você. Falta saber o que realmente funciona no seu corpo antes da largada. Por isso o Protocolo Ignição existe: uma estratégia feita para o seu corpo, testada no treino e executada na prova.<br><br>Você pode escolher descobrir o próximo erro no meio da prova ou corrigir isso agora."
+                text: "E esperança acaba. Geralmente bem na hora que a prova começa de verdade.<br><br>Você não perde por falta de treino. Você perde porque <b>improvisa na nutrição</b>. Come o que dá, toma gel quando lembra e tenta ajustar tudo na hora. O problema é que o erro só aparece quando não dá mais tempo de corrigir.<br><br>Não falta informação para você. Falta saber o que realmente funciona no <b>seu corpo</b> antes da largada. Por isso o Protocolo Ignição existe: uma estratégia feita para você, testada no treino e executada na prova.<br><br>Você pode escolher descobrir o próximo erro na prova ou <b>corrigir isso agora</b>."
             },
             {
                 range: [5, 9], badgeClass: "badge-amber",
                 badge: "Perfil: Quase Lá",
                 title: "Você está perto, mas ainda erra onde mais importa.",
-                text: "Seus erros não são óbvios. São detalhes como o timing do gel, uma reposição mal feita ou a estratégia da véspera. No treino passa batido, mas na prova o corpo cobra.<br><br>Você não perde por falta de esforço. Você perde por falta de precisão. Por isso o Protocolo Ignição existe. A gente ajusta o que você não está vendo, com base no seu treino e no seu ritmo real.<br><br>Você pode deixar esses detalhes continuarem te travando ou pode resolver isso agora."
+                text: "Seus erros não são óbvios. São detalhes como o timing do gel, uma reposição mal feita ou a estratégia da véspera. No treino passa batido, mas <b>na prova o corpo cobra</b>.<br><br>Você não perde por falta de esforço. Você perde por <b>falta de precisão</b>. Por isso o Protocolo Ignição existe. A gente ajusta o que você não está vendo, com base no seu treino e no seu ritmo real.<br><br>Você pode deixar esses detalhes continuarem te travando ou pode <b>resolver isso agora</b>."
             },
             {
                 range: [10, 14], badgeClass: "badge-green",
                 badge: "Perfil: Blindado",
                 title: "Você é elite, mas ainda não tem o controle total.",
-                text: "O básico você já faz bem. Só que no seu nível, o problema nunca é o básico. É o detalhe.<br><br>Quanto, quando e como. Tudo dentro do seu ritmo. É aqui que muita gente acha que está tudo certo e trava sem entender o motivo. O Protocolo Ignição foca no ajuste fino: transformamos o seu conhecimento em execução precisa no dia da prova.<br><br>Você pode continuar dependendo da sorte ou pode passar a controlar o resultado."
+                text: "O básico você já faz bem. Só que no seu nível, o problema nunca é o básico. <b>É o detalhe</b>.<br><br>Quanto, quando e como. Tudo dentro do seu ritmo. É aqui que muita gente acha que está tudo certo e trava sem entender o motivo. O Protocolo Ignição foca no <b>ajuste fino</b>: transformamos o seu conhecimento em execução precisa no dia da prova.<br><br>Você pode continuar dependendo da sorte ou pode passar a <b>controlar o resultado</b>."
             }
         ];
 
@@ -644,6 +644,7 @@
             questionText.textContent = q.q;
 
             optionsEl.innerHTML = '';
+            optionsEl.style.pointerEvents = 'auto'; // Reabilita cliques
             q.options.forEach((opt, i) => {
                 const btn = document.createElement('button');
                 btn.className = 'option-btn';
@@ -713,14 +714,16 @@
            SELEÇÃO DE RESPOSTA
         ═══════════════════════════════════════════════ */
         function pick(btn, pts) {
-            // Limpa as opções imediatamente para evitar pré-marcação visual na próxima tela
-            const allBtns = optionsEl.querySelectorAll('.option-btn');
-            allBtns.forEach(b => b.classList.remove('selected'));
+            // Remove o foco do botão para evitar persistência visual no mobile
+            if (document.activeElement) document.activeElement.blur();
+            
+            // Bloqueia cliques extras durante a transição
+            optionsEl.style.pointerEvents = 'none';
             
             // Vibração (Android/Chrome)
             if (navigator.vibrate) navigator.vibrate(40);
 
-            // Feedback visual
+            // Feedback visual imediato
             btn.classList.add('selected');
 
             score += pts;
