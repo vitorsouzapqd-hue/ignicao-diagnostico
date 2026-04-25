@@ -390,12 +390,12 @@
         .cta-btn {
             display: block;
             width: 100%;
-            background: var(--grad-action);
-            color: #fff;
+            background: var(--hero-gradient);
+            color: #FFFFFF !important;
             text-decoration: none;
             padding: 18px 24px;
             border-radius: 10px;
-            font-family: var(--font-d);
+            font-family: var(--font-display);
             text-transform: uppercase;
             font-weight: 700;
             font-size: 1.15rem;
@@ -852,8 +852,8 @@
             document.getElementById('resultTitle').textContent = r.title;
             document.getElementById('resultText').innerHTML = r.text;
 
-            // Confetes de Brasas para quem é BLINDADO
-            if (score >= 10) launchEmbers();
+            // Efeito de Chamas ao finalizar
+            launchEmbers();
         }
 
         /* ═══════════════════════════════════════════════
@@ -862,39 +862,74 @@
         function launchEmbers() {
             const canvas = document.getElementById('confetti-canvas');
             const ctx = canvas.getContext('2d');
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+            
+            function resize() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            window.addEventListener('resize', resize);
+            resize();
 
-            const colors = ['#C01A1A', '#FF734A', '#FFB347', '#D88CEE', '#FF6B6B'];
-            const particles = Array.from({ length: 80 }, () => ({
-                x: Math.random() * canvas.width,
-                y: canvas.height + 10,
-                vx: (Math.random() - 0.5) * 3,
-                vy: -(Math.random() * 5 + 3),
-                size: Math.random() * 5 + 2,
-                color: colors[Math.floor(Math.random() * colors.length)],
-                life: 1, decay: Math.random() * 0.012 + 0.006,
-                rotate: Math.random() * 360, rotateV: (Math.random() - 0.5) * 5
-            }));
+            const particles = [];
+            // Cores oficiais do Protocolo Ignição
+            const colors = ['#C01A1A', '#FF734A', '#E8442A', '#D88CEE', '#FFFFFF'];
+
+            let isBurning = true;
+            // O fogo arde por 4 segundos e depois apaga suavemente
+            setTimeout(() => { isBurning = false; }, 4000);
+
+            function createParticle() {
+                return {
+                    x: Math.random() * canvas.width,
+                    y: canvas.height + 10 + Math.random() * 20, // Nasce abaixo da tela
+                    vx: (Math.random() - 0.5) * 1.5, // Oscilação horizontal
+                    vy: -(Math.random() * 5 + 3), // Velocidade de subida
+                    size: Math.random() * 20 + 8, // Tamanho da chama
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    life: 1,
+                    decay: Math.random() * 0.02 + 0.008 // Tempo de vida
+                };
+            }
 
             function draw() {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // Adiciona novas partículas enquanto estiver queimando
+                if (isBurning && particles.length < 120) {
+                    for(let i = 0; i < 4; i++) particles.push(createParticle());
+                }
+
                 let alive = false;
-                particles.forEach(p => {
-                    p.x += p.vx; p.y += p.vy; p.vy += 0.08;
-                    p.life -= p.decay; p.rotate += p.rotateV;
-                    if (p.life <= 0) return;
-                    alive = true;
-                    ctx.save();
-                    ctx.translate(p.x, p.y);
-                    ctx.rotate(p.rotate * Math.PI / 180);
-                    ctx.globalAlpha = p.life;
-                    ctx.fillStyle = p.color;
-                    ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 1.4);
-                    ctx.restore();
-                });
-                if (alive) requestAnimationFrame(draw);
-                else ctx.clearRect(0, 0, canvas.width, canvas.height);
+                for (let i = 0; i < particles.length; i++) {
+                    const p = particles[i];
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.size *= 0.96; // Diminui enquanto sobe
+                    p.life -= p.decay;
+                    
+                    if (p.life > 0) {
+                        alive = true;
+                        ctx.save();
+                        ctx.globalAlpha = p.life;
+                        ctx.fillStyle = p.color;
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                        ctx.fill();
+                        
+                        // Efeito de brilho da chama
+                        ctx.shadowBlur = 20;
+                        ctx.shadowColor = p.color;
+                        ctx.fill();
+                        ctx.restore();
+                    }
+                }
+                
+                if (alive || isBurning) {
+                    requestAnimationFrame(draw);
+                } else {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    window.removeEventListener('resize', resize);
+                }
             }
             draw();
         }
