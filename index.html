@@ -24,43 +24,46 @@
 
     <style>
         /* ═══ TOKENS ═══ */
-        :root {
-            /* TOKENS ORIGINAIS */
-            --blood: #C01A1A;
-            --fire: #FF734A;
-            --spark: #D88CEE;
-            --asphalt: #0C0C0B;
-            --graphite: #131313;
-            --smoke: #1A1A1A;
-            --iron: #282827;
-            --steel: #383836;
-            --bone: #F5F3F0;
-            --fog: #9A9895;
-            --emerald: #2E9968;
-            --amber: #E0A53A;
-            --grad-action: linear-gradient(to right, #C01A1A 0%, #D43B27 50%, #FF734A 100%);
-            --grad-brand: linear-gradient(to right, #C01A1A 0%, #E8442A 35%, #FF734A 55%, #D88CEE 100%);
-            --font-d: "Barlow Condensed", system-ui, sans-serif;
-            --font-b: "Inter", system-ui, sans-serif;
+        :root,
+        [data-theme="dark"] {
+            --color-bg: #282827;
+            --color-surface: #1A1A1A;
+            --color-surface-mid: #1A1A1A;
+            --color-surface-low: #131313;
+            --color-text-primary: #F5F3F0;
+            --color-text-readable: #C9C5BD;
+            --color-text-disabled: #9A9895;
+            --color-action-primary: #C01A1A;
+            --color-accent-cold: #D88CEE;
+            --color-border-subtle: rgba(255, 255, 255, 0.1);
+            --color-border: #383836;
 
-            /* VARIÁVEIS FUNCIONAIS DE TEMA (DARK PADRÃO) */
-            --theme-bg: var(--iron);
-            --theme-card-bg: rgba(19, 19, 19, 0.75);
-            --theme-text-primary: var(--bone);
-            --theme-text-secondary: var(--fog);
-            --theme-border: rgba(255, 255, 255, 0.08);
-            --theme-shadow: rgba(0, 0, 0, 0.5);
-            --theme-glass-blur: 20px;
+            --font-display: "Barlow Condensed", "Inter", sans-serif;
+            --font-body: "Inter", system-ui, sans-serif;
+
+            --brand-gradient: linear-gradient(90deg, #C01A1A 0%, #E8442A 30%, #FF734A 50%, #D88CEE 100%);
+            --hero-gradient: linear-gradient(to right, #D43B27 0%, #C01A1A 100%);
+
+            /* Compatibilidade com tokens antigos */
+            --blood: var(--color-action-primary);
+            --fire: #FF734A;
+            --grad-brand: var(--brand-gradient);
+            --font-d: var(--font-display);
+            --font-b: var(--font-body);
         }
 
         [data-theme="light"] {
-            --theme-bg: #F2F0EB;
-            --theme-card-bg: rgba(255, 255, 255, 0.85);
-            --theme-text-primary: var(--graphite);
-            --theme-text-secondary: var(--steel);
-            --theme-border: rgba(0, 0, 0, 0.08);
-            --theme-shadow: rgba(0, 0, 0, 0.1);
-            --theme-glass-blur: 15px;
+            --color-bg: #F0ECE6;
+            --color-surface: #F5F3F0;
+            --color-surface-mid: #F5F3F0;
+            --color-surface-low: #FFFFFF;
+            --color-text-primary: #1A1A18;
+            --color-text-readable: #4A4845;
+            --color-text-disabled: #A09A94;
+            --color-action-primary: #C01A1A;
+            --color-accent-cold: #9B3FC0;
+            --color-border-subtle: rgba(0, 0, 0, 0.1);
+            --color-border: #DDD8D0;
         }
 
         /* ═══ RESET ═══ */
@@ -74,9 +77,9 @@
 
         /* ═══ MESH GRADIENT ANIMADO ═══ */
         body {
-            background-color: var(--theme-bg);
-            font-family: var(--font-b);
-            color: var(--theme-text-primary);
+            background-color: var(--color-bg);
+            font-family: var(--font-body);
+            color: var(--color-text-primary);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -94,8 +97,8 @@
             top: 24px;
             right: 24px;
             z-index: 200;
-            background: var(--theme-card-bg);
-            border: 1px solid var(--theme-border);
+            background: var(--color-surface);
+            border: 1px solid var(--color-border-subtle);
             width: 44px;
             height: 44px;
             border-radius: 12px;
@@ -103,20 +106,20 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            backdrop-filter: blur(var(--theme-glass-blur));
+            backdrop-filter: blur(20px);
             transition: all 0.3s ease;
-            box-shadow: 0 4px 12px var(--theme-shadow);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
         .theme-toggle:hover {
             transform: translateY(-2px);
-            border-color: var(--blood);
+            border-color: var(--color-action-primary);
         }
 
         .theme-toggle svg {
             width: 20px;
             height: 20px;
-            fill: var(--theme-text-primary);
+            fill: var(--color-text-primary);
             transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
@@ -144,7 +147,7 @@
         body::before {
             width: 500px;
             height: 500px;
-            background: var(--blood);
+            background: var(--color-action-primary);
             top: -150px;
             left: -150px;
         }
@@ -152,7 +155,7 @@
         body::after {
             width: 400px;
             height: 400px;
-            background: var(--fire);
+            background: #FF734A;
             bottom: -100px;
             right: -100px;
             animation-delay: -6s;
@@ -178,9 +181,9 @@
         .progress-bar {
             height: 100%;
             width: 0%;
-            background: var(--grad-brand);
+            background: var(--brand-gradient);
             transition: width .5s cubic-bezier(.4, 0, .2, 1);
-            box-shadow: 0 0 12px rgba(255, 115, 74, .4);
+            box-shadow: 0 0 12px rgba(192, 26, 26, .3);
         }
 
         /* ═══ CARD COM NOISE TEXTURE ═══ */
@@ -192,13 +195,13 @@
         }
 
         .card {
-            background: var(--theme-card-bg);
-            backdrop-filter: blur(var(--theme-glass-blur)) saturate(180%);
-            -webkit-backdrop-filter: blur(var(--theme-glass-blur)) saturate(180%);
-            border: 1px solid var(--theme-border);
+            background: var(--color-surface);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border: 1px solid var(--color-border-subtle);
             border-radius: 20px;
             padding: 44px;
-            box-shadow: 0 32px 64px var(--theme-shadow);
+            box-shadow: 0 32px 64px rgba(0, 0, 0, 0.2);
             position: relative;
             overflow: hidden;
             transition: background-color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
@@ -251,17 +254,17 @@
         }
 
         .option-btn {
-            background: rgba(26, 26, 26, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            padding: 15px 20px;
-            border-radius: 10px;
-            color: var(--fog);
+            background: var(--color-surface-low);
+            border: 1px solid var(--color-border-subtle);
+            padding: 16px 20px;
+            border-radius: 12px;
+            color: var(--color-text-readable);
             text-align: left;
             cursor: pointer;
-            font-family: var(--font-b);
-            font-size: .93rem;
+            font-family: var(--font-body);
+            font-size: .95rem;
             line-height: 1.5;
-            transition: all .22s ease;
+            transition: all .25s ease;
 
             /* Stagger — JS vai remover a classe .hidden com delay */
             opacity: 0;
@@ -276,10 +279,11 @@
         }
 
         .option-btn:hover {
-            background: rgba(192, 26, 26, 0.1);
-            border-color: rgba(192, 26, 26, 0.45);
-            color: var(--bone);
-            transform: translateX(5px) !important;
+            background: var(--color-action-primary);
+            border-color: var(--color-action-primary);
+            color: #FFFFFF;
+            transform: translateX(6px) !important;
+            box-shadow: 0 8px 16px rgba(192, 26, 26, 0.2);
         }
 
         .option-btn:active {
@@ -288,10 +292,11 @@
 
         /* Feedback visual ao clicar */
         .option-btn.selected {
-            background: rgba(192, 26, 26, 0.18) !important;
-            border-color: rgba(192, 26, 26, 0.6) !important;
-            color: var(--bone) !important;
+            background: var(--color-action-primary) !important;
+            border-color: var(--color-action-primary) !important;
+            color: #FFFFFF !important;
             pointer-events: none;
+            opacity: 0.7;
         }
 
         /* ═══ FADE DE TROCA DE PERGUNTA ═══ */
